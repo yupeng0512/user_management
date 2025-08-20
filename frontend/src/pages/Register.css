@@ -1,0 +1,55 @@
+.register-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  padding: 20px;
+}
+
+.register-content {
+  width: 100%;
+  max-width: 480px;
+}
+
+.register-card {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  border-radius: 12px;
+  border: none;
+}
+
+.register-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.register-header .ant-typography {
+  margin-bottom: 8px;
+}
+
+.register-footer {
+  text-align: center;
+  margin-top: 16px;
+}
+
+.ant-form-item:last-child {
+  margin-bottom: 0;
+}
+
+.ant-btn-primary {
+  height: 48px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+@media (max-width: 576px) {
+  .register-container {
+    padding: 16px;
+  }
+  
+  .register-card {
+    margin: 0;
+    box-shadow: none;
+    background: transparent;
+  }
+}
