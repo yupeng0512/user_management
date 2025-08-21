@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Card, Row, Col, Statistic, Typography, Space, Button } from 'antd';
 import { UserOutlined, TeamOutlined, CheckCircleOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
@@ -17,7 +17,38 @@ const Dashboard = () => {
     pending: 0,
   });
   const [loading, setLoading] = useState(false);
-  const { user } = authStorage.getAuth();
+  
+  // 使用 useMemo 缓存 user 对象，避免不必要的重新渲染
+  const { user } = useMemo(() => authStorage.getAuth(), []);
+  
+  // 防抖定时器引用
+  const timerRef = useRef(null);
+
+  // 带重试功能的请求函数
+  const fetchWithRetry = async (fn, maxRetries = 3, delay = 1000) => {
+    let lastError;
+    
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+      try {
+        return await fn();
+      } catch (error) {
+        console.log(`尝试 ${attempt + 1}/${maxRetries} 失败:`, error.message);
+        lastError = error;
+        
+        if (attempt < maxRetries - 1) {
+          // 等待一段时间再重试，每次增加延迟
+          await new Promise(resolve => setTimeout(resolve, delay * (attempt + 1)));
+        }
+      }
+    }
+    
+    throw lastError;
+  };
+  
+  // 获取单个统计数据的函数
+  const fetchSingleStat = async (params) => {
+    return await fetchWithRetry(() => userAPI.getUsers(params));
+  };
 
   // 获取用户统计数据
   const fetchStats = async () => {
@@ -26,19 +57,30 @@ const Dashboard = () => {
       
       // 如果是管理员，获取所有用户统计
       if (user?.role === 'admin') {
-        const [totalRes, activeRes, inactiveRes, pendingRes] = await Promise.all([
-          userAPI.getUsers({ limit: 1 }),
-          userAPI.getUsers({ status: USER_STATUS.ACTIVE, limit: 1 }),
-          userAPI.getUsers({ status: USER_STATUS.INACTIVE, limit: 1 }),
-          userAPI.getUsers({ status: USER_STATUS.PENDING, limit: 1 }),
-        ]);
+        try {
+          // 顺序获取统计数据，而不是并行，以避免资源不足错误
+          const totalRes = await fetchSingleStat({ limit: 1 });
+          const activeRes = await fetchSingleStat({ status: USER_STATUS.ACTIVE, limit: 1 });
+          const inactiveRes = await fetchSingleStat({ status: USER_STATUS.INACTIVE, limit: 1 });
+          const pendingRes = await fetchSingleStat({ status: USER_STATUS.PENDING, limit: 1 });
 
-        setStats({
-          total: totalRes.pagination.total,
-          active: activeRes.pagination.total,
-          inactive: inactiveRes.pagination.total,
-          pending: pendingRes.pagination.total,
-        });
+          // 添加防御性检查，确保数据存在
+          setStats({
+            total: totalRes?.pagination?.total || 0,
+            active: activeRes?.pagination?.total || 0,
+            inactive: inactiveRes?.pagination?.total || 0,
+            pending: pendingRes?.pagination?.total || 0,
+          });
+        } catch (innerError) {
+          console.error('Failed to fetch individual stats:', innerError);
+          // 设置默认值，避免界面显示错误
+          setStats({
+            total: 0,
+            active: 0,
+            inactive: 0,
+            pending: 0,
+          });
+        }
       }
     } catch (error) {
       console.error('Failed to fetch stats:', error);
@@ -47,11 +89,34 @@ const Dashboard = () => {
     }
   };
 
-  useEffect(() => {
-    if (user?.role === 'admin') {
-      fetchStats();
+  // 使用防抖函数包装 fetchStats
+  const debouncedFetchStats = () => {
+    // 清除之前的定时器
+    if (timerRef.current) {
+      clearTimeout(timerRef.current);
     }
-  }, [user]);
+    
+    // 设置新的定时器，300ms 后执行
+    timerRef.current = setTimeout(() => {
+      if (user?.role === 'admin') {
+        fetchStats();
+      }
+    }, 300);
+  };
+
+  useEffect(() => {
+    // 组件挂载时获取一次数据
+    if (user?.role === 'admin') {
+      debouncedFetchStats();
+    }
+    
+    // 组件卸载时清除定时器
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, [user?.role]); // 只依赖于 user.role，而不是整个 user 对象
 
   return (
     <div style={{ padding: 24 }}>

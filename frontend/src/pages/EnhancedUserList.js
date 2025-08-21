@@ -36,7 +36,7 @@ import OnlineUsers from '../components/OnlineUsers';
 import './UserList.css';
 
 const { Option } = Select;
-const { TabPane } = Tabs;
+// 不再需要 TabPane 导入
 const { TextArea } = Input;
 
 const EnhancedUserList = () => {
@@ -428,76 +428,76 @@ const EnhancedUserList = () => {
               </Space>
             )
           }
-        >
-          <TabPane 
-            tab={
-              <span>
-                <TeamOutlined />
-                用户列表
-              </span>
-            } 
-            key="list"
-          >
-            {/* 高级搜索 */}
-            <AdvancedSearch 
-              onSearch={handleSearch}
-              onReset={handleSearchReset}
-              loading={searchLoading}
-            />
-            
-            {/* 用户表格 */}
-            <Table
-              columns={columns}
-              dataSource={users}
-              rowKey="_id"
-              loading={loading}
-              pagination={{
-                ...pagination,
-                showSizeChanger: true,
-                showQuickJumper: true,
-                showTotal: (total, range) =>
-                  `第 ${range[0]}-${range[1]} 条，共 ${total} 条记录`,
-              }}
-              onChange={handleTableChange}
-              scroll={{ x: 1200 }}
-              size="middle"
-            />
-          </TabPane>
-          
-          <TabPane 
-            tab={
-              <span>
-                <BarChartOutlined />
-                统计信息
-              </span>
-            } 
-            key="statistics"
-          >
-            <UserStatistics />
-          </TabPane>
-          
-          <TabPane 
-            tab={
-              <span>
-                <UserOutlined />
-                在线用户
-              </span>
-            } 
-            key="online"
-          >
-            <OnlineUsers />
-          </TabPane>
-        </Tabs>
+          items={[
+            {
+              key: "list",
+              label: (
+                <span>
+                  <TeamOutlined />
+                  用户列表
+                </span>
+              ),
+              children: (
+                <>
+                  {/* 高级搜索 */}
+                  <AdvancedSearch 
+                    onSearch={handleSearch}
+                    onReset={handleSearchReset}
+                    loading={searchLoading}
+                  />
+                  
+                  {/* 用户表格 */}
+                  <Table
+                    columns={columns}
+                    dataSource={users}
+                    rowKey="_id"
+                    loading={loading}
+                    pagination={{
+                      ...pagination,
+                      showSizeChanger: true,
+                      showQuickJumper: true,
+                      showTotal: (total, range) =>
+                        `第 ${range[0]}-${range[1]} 条，共 ${total} 条记录`,
+                    }}
+                    onChange={handleTableChange}
+                    scroll={{ x: 1200 }}
+                    size="middle"
+                  />
+                </>
+              )
+            },
+            {
+              key: "statistics",
+              label: (
+                <span>
+                  <BarChartOutlined />
+                  统计信息
+                </span>
+              ),
+              children: <UserStatistics />
+            },
+            {
+              key: "online",
+              label: (
+                <span>
+                  <UserOutlined />
+                  在线用户
+                </span>
+              ),
+              children: <OnlineUsers />
+            }
+          ]}
+        />
       </Card>
 
       {/* 创建/编辑用户模态框 */}
       <Modal
         title={editingUser ? '编辑用户' : '新建用户'}
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={handleModalOk}
         onCancel={handleModalCancel}
         width={600}
-        destroyOnClose
+        destroyOnHidden
       >
         <Form form={form} layout="vertical">
           <Row gutter={16}>
@@ -628,7 +628,7 @@ const EnhancedUserList = () => {
       {/* 用户详情模态框 */}
       <Modal
         title="用户详情"
-        visible={isDetailModalVisible}
+        open={isDetailModalVisible}
         onCancel={() => setIsDetailModalVisible(false)}
         footer={null}
         width={800}

@@ -24,7 +24,21 @@ app.use(helmet({
 
 // CORS配置
 app.use(cors({
-  origin: config.CORS_ORIGIN,
+  origin: function(origin, callback) {
+    // 允许的源列表
+    const allowedOrigins = config.CORS_ORIGIN.split(',');
+    
+    // 允许没有 origin 的请求（如 Postman）
+    if (!origin) return callback(null, true);
+    
+    // 检查请求的源是否在允许列表中
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log(`CORS 阻止来自 ${origin} 的请求，允许的源: ${allowedOrigins.join(', ')}`);
+      callback(new Error('不允许的源'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
@@ -37,10 +51,10 @@ if (config.NODE_ENV === 'development') {
   app.use(morgan('combined'));
 }
 
-// 限流配置
-const limiter = rateLimit({
+// 限流配置 - 仅对敏感操作应用
+const authLimiter = rateLimit({
   windowMs: config.RATE_LIMIT_WINDOW_MS, // 15分钟
-  max: config.RATE_LIMIT_MAX_REQUESTS, // 限制每个IP最多100个请求
+  max: config.RATE_LIMIT_MAX_REQUESTS, // 限制每个IP最多请求次数
   message: {
     success: false,
     error: {
@@ -52,7 +66,13 @@ const limiter = rateLimit({
   legacyHeaders: false
 });
 
-app.use('/api/', limiter);
+// 仅对敏感路径应用限流（登录、注册等）
+app.use('/api/auth/login', authLimiter);
+app.use('/api/auth/register', authLimiter);
+app.use('/api/auth/logout', authLimiter);
+
+// 开发环境中，不对其他API应用限流
+// 生产环境可以根据需要添加更多限流规则
 
 // 解析JSON请求体
 app.use(express.json({ limit: '10mb' }));
@@ -75,7 +95,7 @@ app.use(errorHandler);
 // 启动服务器
 const PORT = config.PORT;
 
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, '0.0.0.0', () => {
   console.log(`
 🚀 用户管理系统后端服务已启动
 📍 环境: ${config.NODE_ENV}
