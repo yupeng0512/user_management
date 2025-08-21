@@ -1,0 +1,229 @@
+/* UserList.css - 用户列表页面样式 */
+
+.enhanced-user-list {
+  padding: 24px;
+  background-color: #f0f2f5;
+  min-height: calc(100vh - 64px);
+}
+
+.enhanced-user-list .ant-card {
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  margin-bottom: 16px;
+}
+
+.enhanced-user-list .ant-tabs-tab {
+  font-weight: 500;
+}
+
+.enhanced-user-list .ant-tabs-tab-active {
+  color: #1890ff;
+}
+
+.enhanced-user-list .ant-table-thead > tr > th {
+  background-color: #fafafa;
+  font-weight: 600;
+  border-bottom: 2px solid #f0f0f0;
+}
+
+.enhanced-user-list .ant-table-tbody > tr:hover > td {
+  background-color: #fafafa;
+}
+
+.enhanced-user-list .ant-tag {
+  border-radius: 4px;
+  margin: 2px;
+}
+
+.enhanced-user-list .ant-avatar {
+  background-color: #1890ff;
+  margin-right: 8px;
+}
+
+.enhanced-user-list .ant-badge-status-dot {
+  width: 8px;
+  height: 8px;
+}
+
+.enhanced-user-list .ant-badge-status-success {
+  background-color: #52c41a;
+  box-shadow: 0 0 0 1px #52c41a;
+  animation: online-pulse 2s infinite;
+}
+
+@keyframes online-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(82, 196, 26, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 4px rgba(82, 196, 26, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(82, 196, 26, 0);
+  }
+}
+
+.enhanced-user-list .ant-modal-title {
+  font-weight: 600;
+  color: #262626;
+}
+
+.enhanced-user-list .ant-form-item-label > label {
+  font-weight: 500;
+  color: #262626;
+}
+
+.enhanced-user-list .ant-btn-primary {
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
+
+.enhanced-user-list .ant-btn-primary:hover,
+.enhanced-user-list .ant-btn-primary:focus {
+  background-color: #40a9ff;
+  border-color: #40a9ff;
+}
+
+.enhanced-user-list .ant-btn-danger {
+  color: #ff4d4f;
+  border-color: #ff4d4f;
+}
+
+.enhanced-user-list .ant-btn-danger:hover,
+.enhanced-user-list .ant-btn-danger:focus {
+  color: #ff7875;
+  border-color: #ff7875;
+}
+
+.enhanced-user-list .ant-popconfirm {
+  z-index: 1050;
+}
+
+.enhanced-user-list .ant-tooltip {
+  z-index: 1050;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .enhanced-user-list {
+    padding: 16px;
+  }
+  
+  .enhanced-user-list .ant-table {
+    font-size: 12px;
+  }
+  
+  .enhanced-user-list .ant-card-extra {
+    margin-left: 0;
+    margin-top: 16px;
+  }
+  
+  .enhanced-user-list .ant-space {
+    display: block;
+  }
+  
+  .enhanced-user-list .ant-space-item {
+    margin-bottom: 8px;
+    display: block;
+  }
+  
+  .enhanced-user-list .ant-btn {
+    width: 100%;
+    margin-bottom: 8px;
+  }
+}
+
+@media (max-width: 576px) {
+  .enhanced-user-list {
+    padding: 12px;
+  }
+  
+  .enhanced-user-list .ant-table-scroll {
+    overflow-x: auto;
+  }
+  
+  .enhanced-user-list .ant-modal {
+    margin: 0;
+    padding: 20px;
+  }
+  
+  .enhanced-user-list .ant-modal-content {
+    border-radius: 8px;
+  }
+}
+
+/* 加载状态 */
+.enhanced-user-list .ant-spin-container {
+  min-height: 200px;
+}
+
+.enhanced-user-list .ant-spin-spinning {
+  position: relative;
+}
+
+.enhanced-user-list .ant-empty {
+  padding: 40px 0;
+}
+
+/* 自定义滚动条 */
+.enhanced-user-list .ant-table-body::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.enhanced-user-list .ant-table-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 3px;
+}
+
+.enhanced-user-list .ant-table-body::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 3px;
+}
+
+.enhanced-user-list .ant-table-body::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* 状态颜色主题 */
+.enhanced-user-list .status-active {
+  color: #52c41a;
+}
+
+.enhanced-user-list .status-inactive {
+  color: #faad14;
+}
+
+.enhanced-user-list .status-pending {
+  color: #1890ff;
+}
+
+.enhanced-user-list .status-banned {
+  color: #ff4d4f;
+}
+
+.enhanced-user-list .role-admin {
+  color: #ff4d4f;
+  font-weight: 600;
+}
+
+.enhanced-user-list .role-user {
+  color: #1890ff;
+}
+
+.enhanced-user-list .role-guest {
+  color: #52c41a;
+}
+
+/* 动画效果 */
+.enhanced-user-list .ant-table-tbody > tr {
+  transition: all 0.2s ease-in-out;
+}
+
+.enhanced-user-list .ant-btn {
+  transition: all 0.2s ease-in-out;
+}
+
+.enhanced-user-list .ant-tag {
+  transition: all 0.2s ease-in-out;
+}
