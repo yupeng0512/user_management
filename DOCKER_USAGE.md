@@ -4,132 +4,132 @@
 
 本项目提供了两种 Docker 部署方式：开发环境和生产环境。
 
-## 开发环境（推荐用于开发）
+## 1. 开发环境部署
 
-开发环境支持热重载，代码修改后会自动重启服务。
+开发环境配置了热重载功能，适合日常开发使用。代码修改后无需重新构建镜像，容器会自动检测变化并更新。
 
-### 启动开发环境
+### 1.1 快速启动
+
+使用提供的便捷脚本启动开发环境：
 
 ```bash
-# 使用开发环境配置启动
-docker-compose -f docker-compose.dev.yml up --build
-
-# 或者在后台运行
-docker-compose -f docker-compose.dev.yml up --build -d
+sh start-dev.sh
 ```
 
-### 停止开发环境
+该脚本会自动执行以下操作：
+- 检查 Docker 是否正在运行
+- 检查 Docker Buildx 是否可用
+- 对于 Colima 环境，自动更新 IP 地址配置
+- 停止可能正在运行的服务
+- 构建并启动所有服务
+
+### 1.2 手动启动
+
+如果您需要手动控制启动过程，可以使用以下命令：
 
 ```bash
+# 构建并启动所有服务
+docker-compose -f docker-compose.dev.yml up --build -d
+
+# 查看服务状态
+docker-compose -f docker-compose.dev.yml ps
+
+# 查看日志
+docker-compose -f docker-compose.dev.yml logs -f
+
+# 停止服务
 docker-compose -f docker-compose.dev.yml down
 ```
 
-### 重新构建并启动
+### 1.3 访问服务
+
+- 前端应用：http://localhost:3000
+- 后端API：http://localhost:3001/api
+- 数据库：mongodb://admin:password123@localhost:27017/user_management
+
+## 2. 生产环境部署
+
+生产环境针对性能和安全性进行了优化，适合正式部署使用。
+
+### 2.1 快速启动
+
+使用提供的便捷脚本启动生产环境：
 
 ```bash
-docker-compose -f docker-compose.dev.yml up --build --force-recreate
+sh start-prod.sh
 ```
 
-## 生产环境
+该脚本会自动执行以下操作：
+- 检查 Docker 是否正在运行
+- 检查 Docker Buildx 是否可用
+- 停止可能正在运行的服务
+- 构建并启动所有服务
 
-生产环境使用优化的镜像，仅包含生产依赖。
+### 2.2 手动启动
 
-### 启动生产环境
+如果您需要手动控制启动过程，可以使用以下命令：
 
 ```bash
-# 使用生产环境配置启动
-docker-compose up --build
-
-# 或者在后台运行
+# 构建并启动所有服务
 docker-compose up --build -d
-```
 
-### 停止生产环境
+# 查看服务状态
+docker-compose ps
 
-```bash
+# 查看日志
+docker-compose logs -f
+
+# 停止服务
 docker-compose down
 ```
 
-### 重新构建并启动
+### 2.3 访问服务
 
-```bash
-docker-compose up --build --force-recreate
-```
+- 前端应用：http://localhost:3000
+- 后端API：http://localhost:3001/api
+- 数据库：mongodb://admin:password123@localhost:27017/user_management
 
-## 主要区别
+## 3. 自定义配置
 
-| 特性 | 开发环境 | 生产环境 |
-|------|----------|----------|
-| 热重载 | ✅ 支持 | ❌ 不支持 |
-| 代码映射 | ✅ 映射到容器 | ❌ 构建到镜像 |
-| 依赖安装 | 包含开发依赖 | 仅生产依赖 |
-| 性能 | 较慢（开发便利） | 较快（生产优化） |
-| NODE_ENV | development | production |
+如果需要自定义配置，可以修改相应的 Docker Compose 文件：
 
-## 常用命令
+- 开发环境：`docker-compose.dev.yml`
+- 生产环境：`docker-compose.yml`
 
-### 查看日志
+主要可配置项包括：
 
-```bash
-# 开发环境
-docker-compose -f docker-compose.dev.yml logs -f
+- 端口映射
+- 环境变量
+- 数据卷挂载
+- 网络配置
 
-# 生产环境
-docker-compose logs -f
-```
+## 4. 常见问题
 
-### 进入容器
+### 4.1 端口冲突
 
-```bash
-# 进入后端容器
-docker exec -it user_management_backend_dev sh    # 开发环境
-docker exec -it user_management_backend sh        # 生产环境
-
-# 进入前端容器
-docker exec -it user_management_frontend_dev sh   # 开发环境
-docker exec -it user_management_frontend sh       # 生产环境
-```
-
-### 清理资源
-
-```bash
-# 停止并删除容器、网络
-docker-compose -f docker-compose.dev.yml down    # 开发环境
-docker-compose down                               # 生产环境
-
-# 删除相关镜像
-docker image prune -f
-
-# 删除所有未使用的资源
-docker system prune -f
-```
-
-## 首次使用建议
-
-1. **开发阶段**：使用 `docker-compose.dev.yml` 配置
-2. **测试阶段**：使用主 `docker-compose.yml` 配置验证生产环境
-3. **部署阶段**：使用主 `docker-compose.yml` 配置部署到服务器
-
-## 故障排除
-
-### 端口冲突
-如果遇到端口被占用的问题，可以修改 docker-compose 文件中的端口映射：
+如果遇到端口冲突，可以修改 Docker Compose 文件中的端口映射：
 
 ```yaml
 ports:
-  - "3001:3001"  # 改为 "3002:3001"
+  - "新端口:容器端口"
 ```
 
-### 权限问题
-如果在 Linux/macOS 上遇到权限问题：
+### 4.2 数据持久化
 
-```bash
-sudo chown -R $USER:$USER ./
+默认情况下，MongoDB 数据存储在 Docker 卷中。如果需要将数据存储在主机目录，可以修改卷配置：
+
+```yaml
+volumes:
+  - ./data/mongodb:/data/db
 ```
 
-### 数据库连接问题
-确保 MongoDB 容器已启动：
+### 4.3 环境变量
 
-```bash
-docker-compose -f docker-compose.dev.yml ps
-```
+可以通过修改 Docker Compose 文件中的 `environment` 部分来配置环境变量，或者创建 `.env` 文件。
+
+## 5. 安全注意事项
+
+- 生产环境部署时，请修改所有默认密码
+- 考虑使用 Docker Secrets 或环境变量文件管理敏感信息
+- 限制容器网络访问，只开放必要的端口
+- 定期更新基础镜像和依赖包
