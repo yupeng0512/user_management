@@ -58,10 +58,15 @@ temp/
 
 # Local environment files
 COLIMA_USAGE.md
-DOCKER_USAGE.md
 COLIMA.md
-SUMMARY.md
 update-colima-ip.sh
+
+# Documentation files (only keep README.md)
+CHANGES.md
+SUMMARY.md
+
+# Development configuration
+docker-compose.dev.yml
 
 # MongoDB
 data/
