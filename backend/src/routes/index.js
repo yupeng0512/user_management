@@ -4,10 +4,12 @@ const router = express.Router();
 // 导入路由模块
 const authRoutes = require('./auth');
 const userRoutes = require('./users');
+const passwordRoutes = require('./password');
 
 // 注册路由
 router.use('/auth', authRoutes);
 router.use('/users', userRoutes);
+router.use('/auth/password', passwordRoutes);
 
 // 健康检查路由
 router.get('/health', (req, res) => {
@@ -27,6 +29,7 @@ router.get('/', (req, res) => {
     endpoints: {
       auth: '/api/auth',
       users: '/api/users',
+      password: '/api/auth/password',
       health: '/api/health'
     }
   });

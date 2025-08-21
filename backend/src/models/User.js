@@ -112,6 +112,31 @@ const userSchema = new mongoose.Schema({
   },
   refreshToken: {
     type: String
+  },
+  // 密码管理相关字段
+  passwordChangedAt: {
+    type: Date,
+    default: Date.now
+  },
+  passwordChangeCount: {
+    type: Number,
+    default: 0
+  },
+  lastPasswordChangeDate: {
+    type: Date
+  },
+  passwordResetToken: {
+    type: String
+  },
+  passwordResetExpires: {
+    type: Date
+  },
+  passwordResetAttempts: {
+    type: Number,
+    default: 0
+  },
+  lastPasswordResetDate: {
+    type: Date
   }
 }, {
   timestamps: true,

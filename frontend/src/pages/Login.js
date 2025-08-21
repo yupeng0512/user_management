@@ -106,6 +106,9 @@ const Login = () => {
           <div className="login-footer">
             <Space direction="vertical" align="center" style={{ width: '100%' }}>
               <Text>
+                <Link to="/reset-password">忘记密码？</Link>
+              </Text>
+              <Text>
                 还没有账户？{' '}
                 <Link to="/register">立即注册</Link>
               </Text>

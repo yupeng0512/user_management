@@ -8,6 +8,7 @@ import {
   SettingOutlined,
   LogoutOutlined,
   DashboardOutlined,
+  LockOutlined,
 } from '@ant-design/icons';
 import { useNavigate, useLocation, Outlet } from 'react-router-dom';
 import { authStorage, authAPI } from '../services/auth';
@@ -41,6 +42,12 @@ const AppLayout = () => {
         icon: <UserOutlined />,
         label: '个人资料',
         onClick: () => navigate(`/users/${user?.id}`),
+      },
+      {
+        key: 'password',
+        icon: <LockOutlined />,
+        label: '密码管理',
+        onClick: () => navigate('/password'),
       },
       {
         key: 'settings',

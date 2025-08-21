@@ -12,6 +12,8 @@ import Dashboard from './pages/Dashboard';
 import UserList from './pages/UserList';
 import EnhancedUserList from './pages/EnhancedUserList';
 import UserProfile from './pages/UserProfile';
+import PasswordManagement from './pages/PasswordManagement';
+import ResetPassword from './components/ResetPassword';
 
 // 布局和路由保护组件
 import AppLayout from './components/Layout';
@@ -39,6 +41,12 @@ function App() {
               path="/register" 
               element={
                 isAuthenticated ? <Navigate to="/dashboard" replace /> : <Register />
+              } 
+            />
+            <Route 
+              path="/reset-password" 
+              element={
+                isAuthenticated ? <Navigate to="/dashboard" replace /> : <ResetPassword />
               } 
             />
 
@@ -69,6 +77,9 @@ function App() {
               
               {/* 用户详情/编辑 */}
               <Route path="users/:id" element={<UserProfile />} />
+              
+              {/* 密码管理 - 需要认证 */}
+              <Route path="password" element={<PasswordManagement />} />
             </Route>
 
             {/* 404 页面 */}
