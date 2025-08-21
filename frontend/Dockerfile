@@ -14,6 +14,10 @@ RUN npm ci
 RUN addgroup -g 1001 -S nodejs && \
     adduser -S nodejs -u 1001 -G nodejs
 
+# 创建缓存目录并设置权限
+RUN mkdir -p /app/node_modules/.cache && \
+    chown -R nodejs:nodejs /app/node_modules/.cache
+
 # 复制应用源代码
 COPY --chown=nodejs:nodejs . .
 

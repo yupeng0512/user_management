@@ -18,7 +18,7 @@ import {
 } from '@ant-design/icons';
 import { passwordAPI } from '../services/password';
 import PasswordStrengthIndicator from './PasswordStrengthIndicator';
-import { useAuth } from '../contexts/AuthContext';
+import { authStorage, authAPI } from '../services/auth';
 import './ChangePassword.css';
 
 const ChangePassword = ({ onSuccess }) => {
@@ -26,7 +26,6 @@ const ChangePassword = ({ onSuccess }) => {
   const [loading, setLoading] = useState(false);
   const [passwordValidation, setPasswordValidation] = useState(null);
   const [showStrengthIndicator, setShowStrengthIndicator] = useState(false);
-  const { logout } = useAuth();
 
   // 验证密码强度
   const handlePasswordChange = async (e) => {
@@ -73,8 +72,15 @@ const ChangePassword = ({ onSuccess }) => {
         }
 
         // 延迟1秒后自动登出
-        setTimeout(() => {
-          logout();
+        setTimeout(async () => {
+          try {
+            await authAPI.logout();
+          } catch (error) {
+            console.error('登出失败:', error);
+          } finally {
+            authStorage.clearAuth();
+            window.location.href = '/login';
+          }
         }, 1000);
       }
     } catch (error) {
