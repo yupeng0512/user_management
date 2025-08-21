@@ -9,8 +9,8 @@ export const userAPI = {
   },
 
   // 获取用户详情
-  getUserById: async (id) => {
-    const response = await api.get(`/users/${id}`);
+  getUserById: async (id, params = {}) => {
+    const response = await api.get(`/users/${id}`, { params });
     return response.data;
   },
 
@@ -31,4 +31,34 @@ export const userAPI = {
     const response = await api.delete(`/users/${id}`);
     return response.data;
   },
+
+  // 高级搜索用户
+  searchUsers: async (searchData) => {
+    const response = await api.post('/users/search', searchData);
+    return response.data;
+  },
+
+  // 获取用户统计信息
+  getUserStatistics: async (params = {}) => {
+    const response = await api.get('/users/statistics', { params });
+    return response.data;
+  },
+
+  // 获取在线用户列表
+  getOnlineUsers: async (params = {}) => {
+    const response = await api.get('/users/online', { params });
+    return response.data;
+  },
 };
+
+// 为了向后兼容，也导出单独的函数
+export const {
+  getUsers,
+  getUserById,
+  createUser,
+  updateUser,
+  deleteUser,
+  searchUsers,
+  getUserStatistics,
+  getOnlineUsers
+} = userAPI;

@@ -1,0 +1,44 @@
+.advanced-search-card {
+  margin-bottom: 16px;
+}
+
+.advanced-search-card .ant-card-body {
+  padding: 20px;
+}
+
+.advanced-search-card .ant-form-item {
+  margin-bottom: 16px;
+}
+
+.advanced-search-card .ant-form-item-label > label {
+  font-weight: 500;
+  color: #333;
+}
+
+.advanced-search-card .ant-input,
+.advanced-search-card .ant-select-selector {
+  border-radius: 6px;
+}
+
+.advanced-search-card .ant-btn {
+  border-radius: 6px;
+  height: 36px;
+}
+
+.advanced-search-card .ant-tag {
+  border-radius: 12px;
+  margin-right: 4px;
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .advanced-search-card .ant-row {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+  
+  .advanced-search-card .ant-col {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+}

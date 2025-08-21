@@ -10,6 +10,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import UserList from './pages/UserList';
+import EnhancedUserList from './pages/EnhancedUserList';
 import UserProfile from './pages/UserProfile';
 
 // 布局和路由保护组件
@@ -61,7 +62,7 @@ function App() {
                 path="users" 
                 element={
                   <ProtectedRoute requireAdmin>
-                    <UserList />
+                    <EnhancedUserList />
                   </ProtectedRoute>
                 } 
               />

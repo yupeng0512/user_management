@@ -7,6 +7,15 @@ const { validateCreateUser, validateUpdateUser } = require('../middleware/valida
 // 获取用户列表 - 需要管理员权限
 router.get('/', authenticate, requireAdmin, userController.getUsers);
 
+// 获取用户统计信息 - 需要管理员权限
+router.get('/statistics', authenticate, requireAdmin, userController.getUserStatistics);
+
+// 获取在线用户列表 - 需要管理员权限
+router.get('/online', authenticate, requireAdmin, userController.getOnlineUsers);
+
+// 高级搜索用户 - 需要管理员权限
+router.post('/search', authenticate, requireAdmin, userController.searchUsers);
+
 // 创建新用户 - 需要管理员权限
 router.post('/', authenticate, requireAdmin, validateCreateUser, userController.createUser);
 
